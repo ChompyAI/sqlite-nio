@@ -2370,10 +2370,10 @@ struct sqlite3_mem_methods {
 **
 ** [[SQLITE_DBCONFIG_ENABLE_LOAD_EXTENSION]]
 ** <dt>SQLITE_DBCONFIG_ENABLE_LOAD_EXTENSION</dt>
-** <dd> ^This option is used to enable or disable the [sqlite3_load_extension()]
+** <dd> ^This option is used to enable or disable the [sqlite_nio_sqlite3_load_extension()]
 ** interface independently of the [load_extension()] SQL function.
-** The [sqlite3_enable_load_extension()] API enables or disables both the
-** C-API [sqlite3_load_extension()] and the SQL function [load_extension()].
+** The [sqlite_nio_sqlite3_enable_load_extension()] API enables or disables both the
+** C-API [sqlite_nio_sqlite3_load_extension()] and the SQL function [load_extension()].
 ** There must be two additional arguments.
 ** When the first argument to this interface is 1, then only the C-API is
 ** enabled and the SQL function remains disabled.  If the first argument to
@@ -2381,7 +2381,7 @@ struct sqlite3_mem_methods {
 ** If the first argument is -1, then no changes are made to the state of either
 ** the C-API or the SQL function.
 ** The second parameter is a pointer to an integer into which
-** is written 0 or 1 to indicate whether [sqlite3_load_extension()] interface
+** is written 0 or 1 to indicate whether [sqlite_nio_sqlite3_load_extension()] interface
 ** is disabled or enabled following this call.  The second parameter may
 ** be a NULL pointer, in which case the new setting is not reported back.
 ** </dd>
@@ -7415,7 +7415,7 @@ SQLITE_API int sqlite_nio_sqlite3_table_column_metadata(
 **
 ** ^This interface loads an SQLite extension library from the named file.
 **
-** ^The sqlite3_load_extension() interface attempts to load an
+** ^The sqlite_nio_sqlite3_load_extension() interface attempts to load an
 ** [SQLite extension] library contained in the file zFile.  If
 ** the file cannot be loaded directly, attempts are made to load
 ** with various operating-system specific extensions added.
@@ -7430,30 +7430,30 @@ SQLITE_API int sqlite_nio_sqlite3_table_column_metadata(
 ** X consists of the lower-case equivalent of all ASCII alphabetic
 ** characters in the filename from the last "/" to the first following
 ** "." and omitting any initial "lib".)^
-** ^The sqlite3_load_extension() interface returns
+** ^The sqlite_nio_sqlite3_load_extension() interface returns
 ** [SQLITE_OK] on success and [SQLITE_ERROR] if something goes wrong.
 ** ^If an error occurs and pzErrMsg is not 0, then the
-** [sqlite3_load_extension()] interface shall attempt to
+** [sqlite_nio_sqlite3_load_extension()] interface shall attempt to
 ** fill *pzErrMsg with error message text stored in memory
 ** obtained from [sqlite_nio_sqlite3_malloc()]. The calling function
 ** should free this memory by calling [sqlite_nio_sqlite3_free()].
 **
 ** ^Extension loading must be enabled using
-** [sqlite3_enable_load_extension()] or
+** [sqlite_nio_sqlite3_enable_load_extension()] or
 ** [sqlite_nio_sqlite3_db_config](db,[SQLITE_DBCONFIG_ENABLE_LOAD_EXTENSION],1,NULL)
 ** prior to calling this API,
 ** otherwise an error will be returned.
 **
 ** <b>Security warning:</b> It is recommended that the
 ** [SQLITE_DBCONFIG_ENABLE_LOAD_EXTENSION] method be used to enable only this
-** interface.  The use of the [sqlite3_enable_load_extension()] interface
+** interface.  The use of the [sqlite_nio_sqlite3_enable_load_extension()] interface
 ** should be avoided.  This will keep the SQL function [load_extension()]
 ** disabled and prevent SQL injections from giving attackers
 ** access to extension loading capabilities.
 **
 ** See also the [load_extension() SQL function].
 */
-SQLITE_API int sqlite3_load_extension(
+SQLITE_API int sqlite_nio_sqlite3_load_extension(
   sqlite3 *db,          /* Load the extension into this database connection */
   const char *zFile,    /* Name of the shared library containing extension */
   const char *zProc,    /* Entry point.  Derived from zFile if 0 */
@@ -7467,15 +7467,15 @@ SQLITE_API int sqlite3_load_extension(
 ** ^So as not to open security holes in older applications that are
 ** unprepared to deal with [extension loading], and as a means of disabling
 ** [extension loading] while evaluating user-entered SQL, the following API
-** is provided to turn the [sqlite3_load_extension()] mechanism on and off.
+** is provided to turn the [sqlite_nio_sqlite3_load_extension()] mechanism on and off.
 **
 ** ^Extension loading is off by default.
-** ^Call the sqlite3_enable_load_extension() routine with onoff==1
+** ^Call the sqlite_nio_sqlite3_enable_load_extension() routine with onoff==1
 ** to turn extension loading on and call it with onoff==0 to turn
 ** it back off again.
 **
 ** ^This interface enables or disables both the C-API
-** [sqlite3_load_extension()] and the SQL function [load_extension()].
+** [sqlite_nio_sqlite3_load_extension()] and the SQL function [load_extension()].
 ** ^(Use [sqlite_nio_sqlite3_db_config](db,[SQLITE_DBCONFIG_ENABLE_LOAD_EXTENSION],..)
 ** to enable or disable only the C-API.)^
 **
@@ -7485,7 +7485,7 @@ SQLITE_API int sqlite3_load_extension(
 ** remains disabled. This will prevent SQL injections from giving attackers
 ** access to extension loading capabilities.
 */
-SQLITE_API int sqlite3_enable_load_extension(sqlite3 *db, int onoff);
+SQLITE_API int sqlite_nio_sqlite3_enable_load_extension(sqlite3 *db, int onoff);
 
 /*
 ** CAPI3REF: Automatically Load Statically Linked Extensions

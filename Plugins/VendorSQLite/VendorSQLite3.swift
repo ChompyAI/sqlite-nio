@@ -89,6 +89,16 @@ struct VendorSQLite: CommandPlugin {
             using: symbols,
             in: context
         )
+
+        // Prefix sqlite-vec extension symbols (if present).
+        let vecHeader = target.directory.appending("sqlite-vec.h")
+        let vecSource = target.directory.appending("sqlite-vec.c")
+        if FileManager.default.fileExists(atPath: vecHeader.string) {
+            try await self.prefixFile(at: vecHeader, using: symbols, in: context)
+        }
+        if FileManager.default.fileExists(atPath: vecSource.string) {
+            try await self.prefixFile(at: vecSource, using: symbols, in: context)
+        }
         
         // Stamp sources with updated version info.
         try """
@@ -193,7 +203,7 @@ struct VendorSQLite: CommandPlugin {
         let objDir = context.package.directory.appending(".build", "debug", "\(target.name).build")
         var objSymbols: Set<Substring> = []
         for object in try FileManager.default.contentsOfDirectory(at: objDir.directoryUrl, includingPropertiesForKeys: nil)
-            .filter({ $0.pathExtension == "o" })
+            .filter({ $0.pathExtension == "o" && $0.lastPathComponent.hasPrefix(Self.vendorPrefix) })
         {
             objSymbols.formUnion(try await Process.popen("nm", "-gUj", object.path).split(separator: "\n").map { $0.dropFirst() })
         }

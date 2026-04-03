@@ -184,6 +184,39 @@ final class SQLiteNIOTests: XCTestCase {
         }
     }
 
+    func testSqliteVecBuiltIn() async throws {
+        try await withOpenedConnection { conn in
+            // sqlite-vec is compiled in — no load_extension needed
+            let version = try await conn.query("SELECT vec_version() as v")
+            XCTAssertEqual(version.first?.column("v")?.string, "v0.1.9")
+
+            // Create a vector table, insert data, and run a KNN search
+            _ = try await conn.query("""
+                CREATE VIRTUAL TABLE movies USING vec0(
+                    synopsis_embedding float[4]
+                )
+                """)
+
+            _ = try await conn.query("INSERT INTO movies(rowid, synopsis_embedding) VALUES (1, '[1.0, 0.0, 0.0, 0.0]')")
+            _ = try await conn.query("INSERT INTO movies(rowid, synopsis_embedding) VALUES (2, '[0.0, 1.0, 0.0, 0.0]')")
+            _ = try await conn.query("INSERT INTO movies(rowid, synopsis_embedding) VALUES (3, '[0.0, 0.0, 1.0, 0.0]')")
+            _ = try await conn.query("INSERT INTO movies(rowid, synopsis_embedding) VALUES (4, '[0.0, 0.0, 0.0, 1.0]')")
+
+            // KNN search: find the 2 closest vectors to [1.0, 0.0, 0.0, 0.0]
+            let results = try await conn.query("""
+                SELECT rowid, distance
+                FROM movies
+                WHERE synopsis_embedding MATCH '[1.0, 0.0, 0.0, 0.0]'
+                AND k = 2
+                """)
+
+            XCTAssertEqual(results.count, 2)
+            // Closest should be rowid 1 (exact match, distance 0)
+            XCTAssertEqual(results.first?.column("rowid")?.integer, 1)
+            XCTAssertEqual(results.first?.column("distance")?.double, 0.0)
+        }
+    }
+
     override class func setUp() {
         XCTAssert(isLoggingConfigured)
     }

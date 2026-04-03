@@ -440,4 +440,5 @@ extension SQLiteConnection {
             try customFunction.uninstall(in: self)
 		}
 	}
+
 }

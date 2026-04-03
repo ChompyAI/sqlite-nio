@@ -95,4 +95,8 @@ var sqliteCSettings: [CSetting] { [
     .define("SQLITE_THREADSAFE", to: "1"),
     .define("SQLITE_UNTESTABLE"),
     .define("SQLITE_USE_URI"),
+    // sqlite-vec: compiled-in vector search extension
+    .define("SQLITE_VEC_STATIC"),
+    .define("SQLITE_VEC_ENABLE_NEON"),
+    .define("SQLITE_EXTRA_AUTOEXT", to: "sqlite3_vec_init"),
 ] }
